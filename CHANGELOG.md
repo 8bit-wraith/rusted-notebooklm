@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Experimental: MCP server** (#1484, opt-in via the `mcp` extra). A
+  [Model Context Protocol](https://modelcontextprotocol.io) server exposing
+  NotebookLM to MCP clients (Claude Desktop / Code, Cursor, Windsurf) as 25 tools
+  across notebooks, sources, chat, notes, studio artifacts, and research — built
+  as a transport-neutral sibling adapter over the `_app/` layer (ADR-0021), so it
+  behaves identically to the equivalent `notebooklm` CLI command. Run it with the
+  `notebooklm-mcp` console script (stdio by default, or loopback HTTP via
+  `--transport http`); wire it into a client with `notebooklm mcp install
+  <client>` or the one-click `.mcpb` desktop bundle. Notebook- and source-scoped
+  tool arguments accept a **name or an id**; destructive tools require
+  `confirm=true` (returning a `needs_confirmation` preview otherwise); long-running
+  generation is non-blocking (`*_generate` returns a `task_id` to poll via
+  `*_status`, then download). **The MCP tool surface is experimental and not
+  covered by the library's semver guarantees** — names, parameters, and output
+  shapes may change between releases. `pip install notebooklm-py` is unaffected:
+  the server and its dependencies (`fastmcp`) arrive only with the `mcp` extra.
+  See [docs/mcp-guide.md](docs/mcp-guide.md).
+
 ### Fixed
 
 - **Empty notebook summary no longer raises `UnknownRPCMethodError`** (#1485).
